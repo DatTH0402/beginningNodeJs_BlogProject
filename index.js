@@ -14,6 +14,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 const fileUpload = require('express-fileupload')
 app.use(fileUpload())
 
+//Custom Middleware
+const validateMiddleWare = (req, res, next) => {
+    if (req.files == null || req.body.title == null || req.body.title == null) {
+        return res.redirect('/posts/new')
+    }
+    next()
+}
+app.use('/posts/store',validateMiddleWare)
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://0.0.0.0:27017/test', { useNewUrlParser: true });
 mongoose.set('strictQuery', true);
