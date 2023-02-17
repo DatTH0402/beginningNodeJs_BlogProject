@@ -9,10 +9,13 @@ app.set('view engine', 'ejs')
 
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({ extended: true }))
+
+const fileUpload = require('express-fileupload')
+app.use(fileUpload())
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://0.0.0.0:27017/test', {useNewUrlParser: true});
+mongoose.connect('mongodb://0.0.0.0:27017/test', { useNewUrlParser: true });
 mongoose.set('strictQuery', true);
 
 app.listen(4000, () => {
@@ -48,17 +51,14 @@ app.get('/posts/new', (req, res) => {
     res.render('create')
 })
 
-// // When there are a lot of  call back functions in call back function, don't use this
-// // Use async await instead.
-// app.post('/posts/store', (req, res) => {
-//     // model creates a new doc with browser data
-//     BlogPost.create(req.body, (error, blogpost) => {
-//         res.redirect('/');
-//         console.log(req.body);
-//     })
-// })
 
-app.post('/posts/store', async (req, res) => {
-    await BlogPost.create(req.body)
-    res.redirect('/')
+app.post('/posts/store', (req, res) => {
+    let image = req.files.image;
+    image.mv(path.resolve(__dirname, 'public/img', image.name), async(error)=> {
+        await BlogPost.create({
+            ...req.body,
+            image: '/img/' + image.name
+        })
+        res.redirect('/')
+    })
 })
