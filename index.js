@@ -4,6 +4,7 @@ const ejs = require('ejs')
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
 const expressSession = require('express-session');
+const flash = require('connect-flash');
 
 const mongoose = require('mongoose')
 const homeController = require('./controllers/home')
@@ -36,6 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(expressSession({
     secret: 'keyboard cat'
 }))
+app.use(flash());
 
 global.loggedIn = null;
 app.use("*", (req, res, next) => {
