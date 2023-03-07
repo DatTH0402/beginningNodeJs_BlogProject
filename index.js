@@ -19,6 +19,7 @@ const loginUserController = require('./controllers/loginUser')
 const authMiddleware = require('./middleware/authMiddleware')
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
 const logoutController = require('./controllers/logout')
+const testController = require('./controllers/test')
 
 app.set('view engine', 'ejs')
 mongoose.connect('mongodb://0.0.0.0:27017/test', { useNewUrlParser: true });
@@ -30,7 +31,6 @@ This is used for Conditionally Display New Post, Login and New User links
 - We specify with the wildcard *, that on all requests, this middleware should be executed.
 */  
 app.use(express.static('public'))
-app.use('/posts/store',validateMiddleware)
 app.use(fileUpload())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -45,6 +45,7 @@ app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()
 });
+app.use('/posts/store',validateMiddleware)
 
 app.listen(4000, () => {
     console.log('App listening on port 4000')
